@@ -8,6 +8,7 @@ git notes add [-f] [--allow-empty] [--[no-]separator | --separator=<paragraph-br
 git notes copy [-f] ( --stdin | <from-object> [<to-object>] )
 git notes append [--allow-empty] [--[no-]separator | --separator=<paragraph-break>] [--[no-]stripspace] [-F <file> | -m <msg> | (-c | -C) <object>] [<object>]
 git notes edit [--allow-empty] [<object>] [--[no-]stripspace]
+git notes show [<object>]
 git notes merge [-v | -q] [-s <strategy> ] <notes-ref>
 git notes merge --commit [-v | -q]
 git notes merge --abort [-v | -q]
@@ -20,8 +21,8 @@ git notes get-ref
 Adds, removes, or reads notes attached to objects, without touching the objects themselves.
 
 By default, notes are saved to and read from `refs/notes/commits`, but this default can be overridden.
-See the OPTIONS, CONFIGURATION, and ENVIRONMENT sections below. 
-If this ref does not exist, it will be quietly created when it is first needed to store a note.
+See the OPTIONS, CONFIGURATION, and ENVIRONMENT sections below.
+In case this ref does not exist, it will be quietly created if you need to store a note.
 
 A typical use of notes is to supplement a commit message without changing the commit itself. 
 Notes can be shown by *git log* along with the original commit message. 
@@ -33,7 +34,7 @@ Such notes are added as a patch commentary after a three dash separator line.
 
 To change which notes are shown by *git log*, see the "notes.displayRef" discussion in CONFIGURATION.
 
-See the "notes.rewrite.<command>" configuration for a way to carry notes across commands that rewrite commits.
+You can see the "notes.rewrite.<command>" configuration if you need a way to carry notes across commands that rewrite commits.
 
 ## SUBCOMMANDS
 `list`
@@ -84,7 +85,7 @@ If conflicts arise and a strategy for automatically resolving conflicting notes
 (see the "NOTES MERGE STRATEGIES" section) is not given, the "manual" resolver is used.
 This resolver checks out the conflicting notes in a special worktree (`.git/NOTES_MERGE_WORKTREE`), and instructs 
 the user to manually resolve the conflicts there. 
-When done, you can either finalize the merge with *git notes merge --commit*, or abort the merge with 
+When done, the user can either finalize the merge with *git notes merge --commit*, or abort the merge with 
 *git notes merge --abort*.
 
 `remove`
@@ -106,7 +107,7 @@ When adding notes to an object that already has notes, overwrite the existing no
 
 `-m <msg>`
 `--message=<msg>`
-Use the given note message (instead of prompting). 
+Use the given note message instead of prompting. 
 If multiple `-m` options are given, their values are concatenated as separate paragraphs. 
 Lines starting with `#` and empty lines other than a single line between paragraphs will be stripped out. 
 If you wish to keep them verbatim, use `--no-stripspace`.
@@ -149,12 +150,13 @@ This overrides `GIT_NOTES_REF` and the "core.notesRef" configuration.
 The ref specifies the full refname when it begins with `refs/notes/`; when it begins with `notes/`, `refs/` and 
 otherwise `refs/notes/` is prefixed to form a full name of the ref.
 
-`--ignore-missing`
-Do not consider it an error to request removing notes from an object that does not have notes attached to it.
-
 `--stdin`
 Also read the object names to remove notes from the standard input (there is no reason you cannot combine this with 
 object names from the command line).
+
+`-n`
+`--dry-run`
+Do not remove anything; just report the object names whose notes would be removed.
 
 `-s <strategy>`
 `--strategy=<strategy>`
@@ -178,6 +180,11 @@ This simply removes all files related to the notes merge.
 `--quiet`
 When merging notes, operate quietly.
 
+`-v`
+`--verbose`
+When merging notes, be more verbose.
+When pruning notes, report all object names whose notes are removed.
+
 ## DISCUSSION
 Commit notes are blobs containing extra information about an object (usually information to supplement 
 a commit’s message). These blobs are taken from notes refs. 
@@ -187,8 +194,8 @@ with some directory separators included for performance reasons [1].
 Every notes change creates a new commit at the specified notes ref. 
 You can therefore inspect the history of the notes by invoking, e.g., `git log -p notes/commits`. 
 Currently the commit message only records which operation triggered the update, and the commit authorship is determined 
-according to the usual rules (see git-commit[1]). 
-These details may change in the future.
+according to the usual rules (see git-commit[1]).
+Warning: these details may change in the future.
 
 It is also permitted for a notes ref to point directly to a tree object, in which case the history of the notes can be 
 read with `git log -p -g <refname>`.
@@ -218,7 +225,7 @@ Note that if either the local or remote version contain duplicate lines prior to
 by this notes merge strategy.
 
 ## EXAMPLES
-You can use these notes to add annotations with information that was not available when a commit was written.
+You can use notes to add annotations with information that was not available at the time a commit was written.
 
 ```
 $ git notes add -m 'Tested-by: Johannes Sixt <j6t@kdbg.org>' 72a144e2
@@ -247,7 +254,7 @@ you’ll probably need to write some special-purpose tools to do something usefu
 `core.notesRef`
 Notes ref to read and manipulate instead of `refs/notes/commits`. 
 Must be an unabbreviated ref name.
-This setting can be overridden through the environment and command line.
+Please note that this setting can be overridden through the environment and command line.
 
 Everything above this line in this section isn’t included from the git-config[1] documentation. 
 The content that follows is the same as what’s found there:
@@ -323,10 +330,6 @@ A warning will be issued for refs that do not exist, but a glob that does not ma
 When copying notes during a rewrite, what to do if the target commit already has a note. 
 Must be one of `overwrite`, `concatenate`, `cat_sort_uniq`, or `ignore`. 
 This overrides the `core.rewriteMode` setting.
-
-`GIT_NOTES_REWRITE_REF`
-When rewriting commits, which notes to copy from the original to the rewritten commit. 
-Must be a colon-delimited list of refs or globs.
 
 If not set in the environment, the list of notes to copy depends on the `notes.rewrite.<command>` and 
 `notes.rewriteRef` settings.

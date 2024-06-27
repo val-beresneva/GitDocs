@@ -34,6 +34,20 @@ As a special case, you may use `"A...B"` as a shortcut for the merge base of `A`
 base. 
 You can leave out at most one of `A` and `B`, in which case it defaults to `HEAD`.
 
+`-p`
+`--patch`
+Interactively select hunks in the difference between the restore source and the restore location.
+See the “Interactive Mode” section of git-add[1] to learn how to operate the `--patch` mode.
+Note that `--patch` can accept no pathspec and will prompt to restore all modified paths.
+`-W`
+`--worktree`
+`-S`
+`--staged`
+Specify the restore location.
+If neither option is specified, by default the working tree is restored.
+Specifying `--staged` will only restore the index.
+Specifying both restores both.
+
 `-q`
 `--quiet`
 Quiet, suppress feedback messages. Implies `--no-progress`.

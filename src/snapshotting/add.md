@@ -34,6 +34,8 @@ Ignored files reached by directory recursion or filename globbing performed by G
 will be silently ignored. 
 The git add command can be used to add ignored files with the `-f` (force) option.
 
+There are other alternative ways to add content to a commit. To check them, you can refer to git-commit[1].
+
 ## OPTIONS
 `<pathspec>…`
 Files to add content from. 
@@ -44,6 +46,8 @@ in the working tree, a file `dir/file2` added to the working tree, but also a fi
 tree). 
 Note that older versions of Git used to ignore removed files; use `--no-all option` if you want to add modified or new 
 files but ignore removed ones.
+
+Check the *pathspec* entry in gitglossary to get more details about the *<pathspec>* syntax.
 
 `-n`
 `--dry-run`
@@ -56,6 +60,12 @@ Be verbose.
 `-f`
 `--force`
 Allow adding otherwise ignored files.
+
+`--sparse`
+Allow updating index entries outside of the sparse-checkout cone.
+Normally, `git add` refuses to update index entries whose paths do not fit within the sparse-checkout cone, since those
+files might be removed from the working tree without warning.
+See git-sparse-checkout[1] for more details.
 
 `-i`
 `--interactive`
@@ -75,9 +85,9 @@ See “Interactive mode” for details.
 `-e`
 `--edit`
 Open the diff vs. the index in an editor and let the user edit it. 
-When the editor was closed, adjust the hunk headers and apply the patch to the index.
+After the editor was closed, adjust the hunk headers and apply the patch to the index.
 
-The goal of this option is to pick and choose lines of the patch to apply, or even to modify the contents of lines 
+The intent of this option is to pick and choose lines of the patch to apply, or even to modify the contents of lines 
 to be staged. 
 This can be quicker and more flexible than using the interactive hunk selector. 
 However, it is easy to confuse oneself and create a patch that does not apply to the index. See EDITING PATCHES below.
@@ -112,7 +122,7 @@ a synonym for "git add --no-all *<pathspec>…*", i.e. ignored removed files.
 `-N`
 `--intent-to-add`
 Record only the fact that the path will be added later. 
-An entry for the path is placed in the index.
+An entry for the path is placed in the index with no content.
 This is useful for, among other things, showing the unstaged content of such files with `git diff` and committing them
 with `git commit -a`.
 
@@ -157,10 +167,6 @@ See also `--pathspec-file-nul` and `global --literal-pathspecs`.
 Only meaningful with `--pathspec-from-file`. 
 Pathspec elements are separated with NUL character and all other characters are taken literally (including newlines 
 and quotes).
-
-`--`
-This option can be used to separate command-line options from the list of files, (useful when filenames might be 
-mistaken for command-line options).
 
 ## EXAMPLES
 - Adds content from all `*.txt` files under `Documentation` directory and its subdirectories:
@@ -232,10 +238,12 @@ the `HEAD` version.
 Reverting new paths makes them untracked.
 
 `add untracked`
-This has a very similar UI to *update* and *revert*, and lets you add untracked paths to the index.
+Similar UI to *update*. 
+Also, the staged information for selected paths are reverted to that of
+the `HEAD` version.
 
 `patch`
-This lets you choose one path out of a *status* like selection. 
+You can choose one path out of a *status* like selection. 
 After choosing the path, it presents the diff between the index and the working tree file and asks you if you want 
 to stage the change of each hunk. 
 You can select one of the following options and type return:
@@ -256,7 +264,7 @@ e - manually edit the current hunk
 p - print the current hunk
 ? - print help
 ```
-After deciding the fate for all hunks, if there is any hunk that was chosen, the index is updated with the selected 
+After you decide the fate for all hunks, if there is any hunk that was chosen, the index is updated with the selected 
 hunks.
 
 You can omit having to type return here, by setting the configuration variable `interactive.singleKey` to `true`.
@@ -289,7 +297,7 @@ Beware that modifying only half of the pair is likely to introduce confusing cha
 There are also more complex operations that can be performed. 
 But beware that because the patch is applied only to the index and not the working tree, the working tree will appear 
 to "undo" the change in the index. 
-For example, introducing a new line into the index that is in neither the HEAD nor the working tree will stage 
+Introducing a new line into the index that is in neither the HEAD nor the working tree will stage 
 the new line for commit, but the line will appear to be reverted in the working tree.
 
 Avoid using these constructs, or do so with extreme caution.
@@ -310,7 +318,7 @@ In all cases, the new modification will appear reverted in the working tree.
 You may also add new content that does not exist in the patch; simply add new lines, each starting with "+". 
 The addition will appear reverted in the working tree.
 
-There are also several operations which should be avoided entirely, as they will make the patch impossible to apply:
+There are also several operations that should be avoided entirely, as they will make the patch impossible to apply:
 - adding context (" ") or removal ("-") lines
 - deleting context or removal lines
 - modifying the contents of context or removal lines
