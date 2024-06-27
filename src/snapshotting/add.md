@@ -34,6 +34,8 @@ Ignored files reached by directory recursion or filename globbing performed by G
 will be silently ignored. 
 The git add command can be used to add ignored files with the `-f` (force) option.
 
+Please see git-commit[1] for alternative ways to add content to a commit.
+
 ## OPTIONS
 `<pathspec>…`
 Files to add content from. 
@@ -44,6 +46,8 @@ in the working tree, a file `dir/file2` added to the working tree, but also a fi
 tree). 
 Note that older versions of Git used to ignore removed files; use `--no-all option` if you want to add modified or new 
 files but ignore removed ones.
+
+For more details about the *<pathspec>* syntax, see the *pathspec* entry in gitglossary[7].
 
 `-n`
 `--dry-run`
@@ -227,8 +231,8 @@ After making the selection, answer with an empty line to stage the contents of w
 in the index.
 
 `revert`
-This has a very similar UI to *update*, and the staged information for selected paths are reverted to that of 
-the `HEAD` version. 
+This has a very similar UI to *update*. 
+The staged information for selected paths are reverted to that of the `HEAD` version.
 Reverting new paths makes them untracked.
 
 `add untracked`

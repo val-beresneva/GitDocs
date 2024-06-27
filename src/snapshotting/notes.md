@@ -20,8 +20,9 @@ git notes get-ref
 Adds, removes, or reads notes attached to objects, without touching the objects themselves.
 
 By default, notes are saved to and read from `refs/notes/commits`, but this default can be overridden.
-See the OPTIONS, CONFIGURATION, and ENVIRONMENT sections below. 
-If this ref does not exist, it will be quietly created when it is first needed to store a note.
+See the OPTIONS, CONFIGURATION, and ENVIRONMENT sections below.
+If you notice that this ref does not exist, don’t worry, as it will be quietly created when it is first needed to store 
+a note.
 
 A typical use of notes is to supplement a commit message without changing the commit itself. 
 Notes can be shown by *git log* along with the original commit message. 
@@ -33,7 +34,7 @@ Such notes are added as a patch commentary after a three dash separator line.
 
 To change which notes are shown by *git log*, see the "notes.displayRef" discussion in CONFIGURATION.
 
-See the "notes.rewrite.<command>" configuration for a way to carry notes across commands that rewrite commits.
+To check the way to carry notes across commands that rewrite commits, see the "notes.rewrite.<command>" configuration.
 
 ## SUBCOMMANDS
 `list`
@@ -187,8 +188,8 @@ with some directory separators included for performance reasons [1].
 Every notes change creates a new commit at the specified notes ref. 
 You can therefore inspect the history of the notes by invoking, e.g., `git log -p notes/commits`. 
 Currently the commit message only records which operation triggered the update, and the commit authorship is determined 
-according to the usual rules (see git-commit[1]). 
-These details may change in the future.
+according to the usual rules (see git-commit[1]).
+Please note that these details may change in the future.
 
 It is also permitted for a notes ref to point directly to a tree object, in which case the history of the notes can be 
 read with `git log -p -g <refname>`.

@@ -15,7 +15,8 @@ In the first form, it renames <source>, which must exist and be either a file, s
 In the second form, the last argument has to be an existing directory; the given sources will be moved into this 
 directory.
 
-The index is updated after successful completion, but the change must still be committed.
+The index is updated after successful completion. 
+However, the change must still be committed.
 
 ## OPTIONS
 `-f`
@@ -44,7 +45,6 @@ the new location.
 To populate the submodule again in the new location the user will have to run "git submodule update" afterwards. 
 Removing the old directory is only safe when it uses a gitfile, as otherwise the history of the submodule will be 
 deleted too. 
-Both steps will be obsolete when recursive submodule update has been implemented.
 
 ## GIT
 Part of the git[1] suite
